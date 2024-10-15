@@ -40,7 +40,7 @@ const handleSteam = async () => {
 		try {
 			const apps = [...Deno.readDirSync(shaderCache)].map(app => app.isDirectory ? app.name : undefined).filter(app => app !== undefined)
 			console.log(`Found ${apps.length} shadercache folders, deleting shadercache/${apps.join("|")}`)
-			await Promise.all(apps.map(app => Deno.remove(path.join(shaderCache, app), { recursive: true })))
+			await Promise.allSettled(apps.map(app => Deno.remove(path.join(shaderCache, app), { recursive: true })))
 			const leftOver = [...Deno.readDirSync(shaderCache)].length
 			console.log(`Removed ${apps.length - leftOver} shadercache folders from ${folderPath}`)
 		} catch {
