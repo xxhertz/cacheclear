@@ -51,4 +51,22 @@ const handleSteam = async () => {
 	await Promise.all(folders)
 }
 
+const handleDirextX = async () => {
+	const userProfile = Deno.env.get("USERPROFILE")
+	if (!userProfile)
+		return console.log("Could not get UserProfile environment variable, skipping DirectX cleanup")
+
+	const shaderCache = path.join(userProfile, "AppData", "LocalLow", "NVIDIA", "PerDriverVersion", "DXCache")
+	try {
+		const shaders = [...Deno.readDirSync(shaderCache)].map(shader => shader.isFile ? shader.name : undefined).filter(app => app !== undefined)
+		console.log(`Found ${shaders.length} shaders in DXCache, deleting`)
+		await Promise.allSettled(shaders.map(shader => Deno.remove(path.join(shaderCache, shader))))
+		const leftOver = [...Deno.readDirSync(shaderCache)].length
+		console.log(`Removed ${shaders.length - leftOver} shader files from DXCache`)
+	} catch {
+		console.log("Could not read/write to DXCache")
+	}
+}
+
 handleSteam()
+handleDirextX()
