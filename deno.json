@@ -1,12 +1,12 @@
 {
-  "tasks": {
-    "dev": "deno run --watch main.ts"
-  },
-  "imports": {
-    "@node-steam/vdf": "npm:@node-steam/vdf@^2.2.0",
-    "@std/assert": "jsr:@std/assert@1",
-    "@std/path": "jsr:@std/path@^1.0.6",
-    "registry-js": "npm:registry-js@^1.16.0"
-  },
-  "nodeModulesDir": "auto"
+	"tasks": {
+		"clearcache": "deno run main.ts"
+	},
+	"imports": {
+		"@node-steam/vdf": "npm:@node-steam/vdf@^2.2.0",
+		"@std/assert": "jsr:@std/assert@1",
+		"@std/path": "jsr:@std/path@^1.0.6",
+		"registry-js": "npm:registry-js@^1.16.0"
+	},
+	"nodeModulesDir": "auto"
 }
