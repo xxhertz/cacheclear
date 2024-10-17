@@ -1,4 +1,9 @@
-# How do I use this?
+# FAQ
+
+## What is cacheclear?
+A simple script to delete common shadercache, forcing games & applications to re-compile shaders, sometimes resulting in an increase in framerate & performance overall
+
+## How do I use it?
 
 1. Clone this repository
 ###### 
