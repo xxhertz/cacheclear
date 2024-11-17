@@ -19,7 +19,7 @@ type VDFFormat = Partial<{
 	libraryfolders: Record<string, VDFLibraryFolder>
 }>
 
-const handleSteam = async () => {
+async function handleSteam() {
 	const steamPath = registryjs.enumerateValues(registryjs.HKEY.HKEY_LOCAL_MACHINE, "SOFTWARE\\WOW6432Node\\Valve\\Steam").find(key => key.name === "InstallPath")
 	if (steamPath === undefined || typeof steamPath.data !== "string")
 		return console.log("Could not find steam path, skipping Steam cleanup")
@@ -51,7 +51,7 @@ const handleSteam = async () => {
 	await Promise.all(folders)
 }
 
-const handleDirextX = async () => {
+async function handleDirectX() {
 	const userProfile = Deno.env.get("USERPROFILE")
 	if (!userProfile)
 		return console.log("Could not get UserProfile environment variable, skipping DirectX cleanup")
@@ -68,5 +68,23 @@ const handleDirextX = async () => {
 	}
 }
 
+async function handleNVGL() {
+	const localAppData = Deno.env.get("LOCALAPPDATA")
+	if (!localAppData)
+		return console.log("Could not get LocalAppData environment variable, skipping NVIDIA GL cleanup")
+
+	const shaderCache = path.join(localAppData, "NVIDIA", "GLCache")
+	try {
+		const shaders = [...Deno.readDirSync(shaderCache)].map(shader => shader.isDirectory ? shader.name : undefined).filter(shader => shader !== undefined)
+		console.log(`Found ${shaders.length} shader folders in GLCache, deleting`)
+		await Promise.allSettled(shaders.map(shader => Deno.remove(shader, { recursive: true })))
+		const leftOver = [...Deno.readDirSync(shaderCache)].length
+		console.log(`Removed ${shaders.length - leftOver} shaders from GLCache`)
+	} catch {
+		console.log("Could not read/write to GLCache")
+	}
+}
+
 handleSteam()
-handleDirextX()
+handleDirectX()
+handleNVGL()
